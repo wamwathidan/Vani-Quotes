@@ -7,13 +7,13 @@
   "theme_color": "#e67e22",
   "icons": [
     {
-      "src": "assets/icon.svg",
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' width='512' height='512'><rect width='512' height='512' rx='100' fill='%23e67e22'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='240' font-weight='bold' fill='%23ffffff'>V</text></svg>",
       "sizes": "192x192 512x512",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "assets/icon.svg",
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' width='512' height='512'><rect width='512' height='512' fill='%23e67e22'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='240' font-weight='bold' fill='%23ffffff'>V</text></svg>",
       "sizes": "192x192 512x512",
       "type": "image/svg+xml",
       "purpose": "maskable"
@@ -21,18 +21,18 @@
   ],
   "screenshots": [
     {
-      "src": "assets/icon.svg",
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1280 720' width='1280' height='720'><rect width='1280' height='720' fill='%23121212'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='48' font-weight='bold' fill='%23e67e22'>Vani-Ashraya Desktop View</text></svg>",
       "sizes": "1280x720",
       "type": "image/svg+xml",
       "form_factor": "wide",
-      "label": "Desktop View"
+      "label": "Desktop Quote Generator"
     },
     {
-      "src": "assets/icon.svg",
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 720 1280' width='720' height='1280'><rect width='720' height='1280' fill='%23121212'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='48' font-weight='bold' fill='%23e67e22'>Vani-Ashraya Mobile View</text></svg>",
       "sizes": "720x1280",
       "type": "image/svg+xml",
       "form_factor": "narrow",
-      "label": "Mobile View"
+      "label": "Mobile Quote Generator"
     }
   ]
 }
