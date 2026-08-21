@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vani-Quotes | Devotional Quote Generator</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%23d35400'/><path d='M50 20 C40 40, 30 50, 50 80 C70 50, 60 40, 50 20 Z' fill='%23f1c40f'/><circle cx='50' cy='52' r='8' fill='%23ffffff'/></svg>">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { display: flex; background: #121212; color: #fff; min-height: 100vh; padding: 20px; gap: 20px; }
+    
+    .controls { flex: 1; max-width: 380px; background: #1e1e1e; padding: 20px; border-radius: 8px; display: flex; flex-direction: column; gap: 10px; max-height: 95vh; overflow-y: auto; }
+    .brand-header { border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 4px; }
+    .brand-header h1 { font-size: 1.4rem; color: #f39c12; letter-spacing: 1px; }
+    .brand-header p { font-size: 0.75rem; color: #888; }
+    
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    label { font-size: 0.8rem; color: #bbb; }
+    input, textarea, select { padding: 8px; background: #2a2a2a; border: 1px solid #444; color: #fff; border-radius: 4px; font-size: 0.85rem; }
+    textarea { resize: vertical; height: 65px; }
+
+    .button-group { display: flex; gap: 10px; margin-top: 8px; }
+    .btn { flex: 1; padding: 10px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.85rem; transition: background 0.2s; }
+    .btn-download { background: #e67e22; color: #fff; }
+    .btn-download:hover { background: #d35400; }
+    .btn-share { background: #2980b9; color: #fff; }
+    .btn-share:hover { background: #1c5980; }
+    
+    .workspace { flex: 2; display: flex; justify-content: center; align-items: center; background: #0a0a0a; border-radius: 8px; padding: 20px; }
+    
+    /* 1:1 Social Media Card Container */
+    #quote-card {
+      width: 500px;
+      height: 500px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* Images Styling */
+    .prabhupada-img { 
+      width: 100px; 
+      height: 100px; 
+      border-radius: 50%; 
+      object-fit: cover; 
+      border: none; 
+      filter: drop-shadow(0px 4px 10px rgba(0,0,0,0.25)); 
+    }
+
+    .speaker-img { 
+      width: 68px; 
+      height: 68px; 
+      border-radius: 50%; 
+      object-fit: cover; 
+      border: none; 
+      -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 98%);
+      mask-image: radial-gradient(circle, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 98%);
+    }
+
+    .subtle-header { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.65; font-weight: 600; }
+    .prabhupada-title { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; margin-top: 2px; }
+
+    /* Strict Flex Middle Section for Quote Only (No Overlap) */
+    .quote-box { 
+      flex: 1; 
+      width: 100%; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      overflow: hidden; 
+      padding: 12px 0; 
+      z-index: 2; 
+    }
+
+    .quote-text { 
+      font-style: italic; 
+      font-family: 'Georgia', serif; 
+      line-height: 1.35; 
+      text-align: center; 
+      max-height: 100%;
+    }
+
+    .speaker-info { display: flex; align-items: center; gap: 12px; z-index: 2; }
+    .speaker-details { display: flex; flex-direction: column; }
+    .speaker-name { font-size: 0.95rem; font-weight: bold; }
+    .metadata-line { font-size: 0.7rem; opacity: 0.85; margin-top: 2px; }
+
+    /* Templates */
+    #quote-card.theme-saffron { background: radial-gradient(circle at top left, #fffaf0, #fceabb, #f8b500); color: #3a1c00; align-items: center; text-align: center; border: 8px solid #d35400; }
+    #quote-card.theme-saffron .prabhupada-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 4px; }
+    #quote-card.theme-saffron .speaker-info { flex-direction: column; justify-content: center; text-align: center; }
+
+    #quote-card.theme-parchment { background-color: #f4e8c1; background-image: radial-gradient(#d4c398 1px, transparent 1px), radial-gradient(#d4c398 1px, #f4e8c1 1px); background-size: 20px 20px; background-position: 0 0, 10px 10px; color: #3a2818; justify-content: space-between; border: 1px solid #c8b282; }
+    #quote-card.theme-parchment .speaker-info { justify-content: flex-start; }
+    #quote-card.theme-parchment .prabhupada-container { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
+
+    #quote-card.theme-dark { background: radial-gradient(circle at center, #2c2c2c 0%, #111111 100%); color: #f1f1f1; border: 2px solid #d4af37; justify-content: space-between; }
+    #quote-card.theme-dark .speaker-info { justify-content: flex-start; }
+    #quote-card.theme-dark .prabhupada-container { display: flex; align-items: center; gap: 12px; text-align: left; }
+
+    #quote-card.theme-ethereal { background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); color: #1a237e; justify-content: space-between; }
+    #quote-card.theme-ethereal .speaker-info { justify-content: center; text-align: center; flex-direction: column; }
+    #quote-card.theme-ethereal .prabhupada-container { display: flex; align-items: center; gap: 12px; text-align: left; }
+
+    #quote-card.theme-modern { background: #ffffff; background-image: repeating-linear-gradient(45deg, #f9f9f9 0, #f9f9f9 10px, transparent 0, transparent 50px); color: #111; border-top: 12px solid #2b6cb0; justify-content: space-between; }
+    #quote-card.theme-modern .prabhupada-container { display: flex; flex-direction: column; align-items: center; text-align: center; }
+    #quote-card.theme-modern .speaker-info { justify-content: flex-end; }
+  </style>
+</head>
+<body>
+
+  <div class="controls">
+    <div class="brand-header">
+      <h1>Vani-Quotes</h1>
+      <p>Devotional Quote Card Generator</p>
+    </div>
+    
+    <div class="form-group">
+      <label>Template Preset</label>
+      <select id="themeSelect">
+        <option value="theme-saffron">1. Traditional Saffron</option>
+        <option value="theme-parchment">2. Textured Parchment</option>
+        <option value="theme-dark">3. Dark Devotional</option>
+        <option value="theme-ethereal">4. Ethereal Texture</option>
+        <option value="theme-modern">5. Modern Editorial</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Srila Prabhupada Photo</label>
+      <select id="prabhupadaSelect">
+        <option value="assets/Prabhupada/1.jpg">Prabhupada Photo 1</option>
+        <option value="assets/Prabhupada/2.jpg">Prabhupada Photo 2</option>
+        <option value="assets/Prabhupada/3.jpg">Prabhupada Photo 3</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Quote Text</label>
+      <textarea id="quoteInput" placeholder="Enter quote here...">By serving the great souls, one attains all success in spiritual life.</textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Speaker Name</label>
+      <input type="text" id="speakerInput" value="HH Maha-Vishnu Swami Maharaj">
+    </div>
+
+    <div class="form-group">
+      <label>Speaker Photo Preset</label>
+      <select id="maharajSelect">
+        <option value="assets/Maharaj/m1.jpg">Maharaj Photo 1</option>
+        <option value="assets/Maharaj/m2.jpg">Maharaj Photo 2</option>
+        <option value="assets/Maharaj/m3.jpg">Maharaj Photo 3</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Or Upload Custom Speaker Photo</label>
+      <input type="file" id="speakerFileInput" accept="image/*" style="margin-bottom: 4px;">
+      <input type="text" id="speakerUrlInput" placeholder="Or paste image URL...">
+    </div>
+
+    <div class="form-group"><label>Date</label><input type="text" id="dateInput" placeholder="e.g. Jan 2004"></div>
+    <div class="form-group"><label>Location</label><input type="text" id="locInput" placeholder="e.g. Singapore"></div>
+    <div class="form-group"><label>Source</label><input type="text" id="sourceInput" placeholder="e.g. Srimad Bhagavatam"></div>
+
+    <div class="button-group">
+      <button class="btn btn-download" id="downloadBtn">Download PNG</button>
+      <button class="btn btn-share" id="shareBtn">Share Card</button>
+    </div>
+  </div>
+
+  <div class="workspace">
+    <div id="quote-card" class="theme-saffron">
+      <div id="cardContent" style="width:100%; height:100%; display:flex; flex-direction:inherit; justify-content:inherit; align-items:inherit;"></div>
+    </div>
+  </div>
+
+  <script>
+    const quoteInput = document.getElementById('quoteInput');
+    const speakerInput = document.getElementById('speakerInput');
+    const speakerFileInput = document.getElementById('speakerFileInput');
+    const speakerUrlInput = document.getElementById('speakerUrlInput');
+    const prabhupadaSelect = document.getElementById('prabhupadaSelect');
+    const maharajSelect = document.getElementById('maharajSelect');
+    const dateInput = document.getElementById('dateInput');
+    const locInput = document.getElementById('locInput');
+    const sourceInput = document.getElementById('sourceInput');
+    const themeSelect = document.getElementById('themeSelect');
+    const quoteCard = document.getElementById('quote-card');
+    const cardContent = document.getElementById('cardContent');
+
+    let activeSpeakerImage = maharajSelect.value;
+    let activePrabhupadaImage = prabhupadaSelect.value;
+
+    prabhupadaSelect.addEventListener('change', () => {
+      activePrabhupadaImage = prabhupadaSelect.value;
+      renderCard();
+    });
+
+    maharajSelect.addEventListener('change', () => {
+      activeSpeakerImage = maharajSelect.value;
+      speakerFileInput.value = '';
+      speakerUrlInput.value = '';
+      renderCard();
+    });
+
+    speakerFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          activeSpeakerImage = evt.target.result;
+          speakerUrlInput.value = '';
+          renderCard();
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    speakerUrlInput.addEventListener('input', () => {
+      if (speakerUrlInput.value.trim()) {
+        activeSpeakerImage = speakerUrlInput.value.trim();
+        speakerFileInput.value = '';
+        renderCard();
+      }
+    });
+
+    function adjustFontSize() {
+      const quoteDisplay = document.getElementById('quoteDisplay');
+      if (!quoteDisplay) return;
+      const box = quoteDisplay.parentElement;
+
+      let fontSize = 38;
+      quoteDisplay.style.fontSize = fontSize + 'px';
+
+      while ((box.scrollHeight > box.clientHeight || box.scrollWidth > box.clientWidth) && fontSize > 8) {
+        fontSize -= 0.5;
+        quoteDisplay.style.fontSize = fontSize + 'px';
+      }
+    }
+
+    function renderCard() {
+      const theme = themeSelect.value;
+      quoteCard.className = theme;
+
+      const metaArr = [dateInput.value.trim(), locInput.value.trim(), sourceInput.value.trim()].filter(Boolean);
+      const metaText = metaArr.join(' • ');
+      const quoteText = `"${quoteInput.value.trim()}"`;
+      const speakerName = speakerInput.value.trim();
+
+      const prabhupadaBlock = `
+        <div class="prabhupada-container">
+          <span class="subtle-header">In service of</span>
+          <img src="${activePrabhupadaImage}" class="prabhupada-img" alt="Srila Prabhupada">
+          <span class="prabhupada-title">HDG Srila A.C. Bhaktivedanta Swami Prabhupada</span>
+        </div>
+      `;
+
+      const speakerBlock = `
+        <div class="speaker-info">
+          ${activeSpeakerImage ? `<img src="${activeSpeakerImage}" class="speaker-img" alt="Speaker">` : ''}
+          <div class="speaker-details">
+            <div class="speaker-name">${speakerName}</div>
+            ${metaText ? `<div class="metadata-line">${metaText}</div>` : ''}
+          </div>
+        </div>
+      `;
+
+      const quoteBlock = `<div class="quote-box"><div id="quoteDisplay" class="quote-text">${quoteText}</div></div>`;
+
+      if (theme === 'theme-saffron' || theme === 'theme-modern') {
+        cardContent.innerHTML = prabhupadaBlock + quoteBlock + speakerBlock;
+      } else {
+        cardContent.innerHTML = speakerBlock + quoteBlock + prabhupadaBlock;
+      }
+
+      requestAnimationFrame(adjustFontSize);
+    }
+
+    async function generateCanvas() {
+      return await html2canvas(quoteCard, { useCORS: true, scale: 2 });
+    }
+
+    document.getElementById('downloadBtn').addEventListener('click', async () => {
+      const canvas = await generateCanvas();
+      const link = document.createElement('a');
+      link.download = 'vani-ashraya-quote.jpg';
+      link.href = canvas.toDataURL('image/jpeg', 0.85);
+      link.click();
+    });
+
+    document.getElementById('shareBtn').addEventListener('click', async () => {
+      const canvas = await generateCanvas();
+      canvas.toBlob(async (blob) => {
+        const file = new File([blob], 'quote.jpg', { type: 'image/jpeg' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              files: [file],
+              title: 'Vani-Ashraya Quote',
+              text: quoteInput.value
+            });
+          } catch (err) {
+            console.log('Sharing canceled', err);
+          }
+        } else {
+          alert('Native sharing is not supported on this browser. Use Download instead.');
+        }
+      }, 'image/jpeg', 0.85);
+    });
+
+    [quoteInput, speakerInput, dateInput, locInput, sourceInput].forEach(el => el.addEventListener('input', renderCard));
+    themeSelect.addEventListener('change', renderCard);
+    renderCard();
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(err => console.error('PWA registration failed:', err));
+    }
+  </script>
+</body>
+</html>
