@@ -1,15 +1,38 @@
 {
   "name": "Vani-Ashraya Quote Generator",
   "short_name": "Vani-Ashraya",
-  "start_url": "./index.html",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#121212",
   "theme_color": "#e67e22",
   "icons": [
     {
       "src": "assets/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "1280x720",
+      "type": "image/svg+xml",
+      "form_factor": "wide",
+      "label": "Desktop Quote Generator"
+    },
+    {
+      "src": "assets/icon.svg",
+      "sizes": "720x1280",
+      "type": "image/svg+xml",
+      "form_factor": "narrow",
+      "label": "Mobile Quote Generator"
     }
   ]
 }
