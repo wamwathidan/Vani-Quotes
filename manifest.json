@@ -8,15 +8,15 @@
   "theme_color": "#e67e22",
   "icons": [
     {
-      "src": "https://dummyimage.com/192x192/e67e22/ffffff.png&text=V",
-      "sizes": "192x192",
-      "type": "image/png",
+      "src": "assets/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "https://dummyimage.com/512x512/e67e22/ffffff.png&text=V",
-      "sizes": "512x512",
-      "type": "image/png",
+      "src": "assets/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
       "purpose": "maskable"
     }
   ],
