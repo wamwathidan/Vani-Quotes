@@ -2,29 +2,39 @@
   "id": "/Vani-Quotes/",
   "name": "Vani-Quotes Devotional Generator",
   "short_name": "Vani-Quotes",
-  "start_url": "/Vani-Quotes/index.html",
-  "scope": "/Vani-Quotes/",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#121212",
   "theme_color": "#e67e22",
   "icons": [
     {
-      "src": "/Vani-Quotes/assets/icon.png",
-      "sizes": "192x192",
+      "src": "./assets/icon.png",
+      "sizes": "192x192 512x512 1200x1200",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/Vani-Quotes/assets/icon.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/Vani-Quotes/assets/icon.png",
-      "sizes": "512x512",
+      "src": "./assets/icon.png",
+      "sizes": "192x192 512x512 1200x1200",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./assets/icon.png",
+      "sizes": "1200x1200",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Desktop Quote Generator"
+    },
+    {
+      "src": "./assets/icon.png",
+      "sizes": "1200x1200",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mobile Quote Generator"
     }
   ]
 }
