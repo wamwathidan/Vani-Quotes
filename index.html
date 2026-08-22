@@ -4,196 +4,274 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vani-Quotes | Devotional Quote Generator</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%23d35400'/><path d='M50 20 C40 40, 30 50, 50 80 C70 50, 60 40, 50 20 Z' fill='%23f1c40f'/><circle cx='50' cy='52' r='8' fill='%23ffffff'/></svg>">
+  <link rel="icon" type="image/png" href="assets/icon.png">
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { display: flex; background: #121212; color: #fff; min-height: 100vh; padding: 20px; gap: 20px; }
-    
-    .controls { flex: 1; max-width: 380px; background: #1e1e1e; padding: 20px; border-radius: 8px; display: flex; flex-direction: column; gap: 10px; max-height: 95vh; overflow-y: auto; }
-    .brand-header { border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 4px; }
-    .brand-header h1 { font-size: 1.4rem; color: #f39c12; letter-spacing: 1px; }
-    .brand-header p { font-size: 0.75rem; color: #888; }
-    
-    .form-group { display: flex; flex-direction: column; gap: 4px; }
-    label { font-size: 0.8rem; color: #bbb; }
-    input, textarea, select { padding: 8px; background: #2a2a2a; border: 1px solid #444; color: #fff; border-radius: 4px; font-size: 0.85rem; }
-    textarea { resize: vertical; height: 65px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background-color: #121212;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
 
-    .button-group { display: flex; gap: 10px; margin-top: 8px; }
-    .btn { flex: 1; padding: 10px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.85rem; transition: background 0.2s; }
-    .btn-download { background: #e67e22; color: #fff; }
-    .btn-download:hover { background: #d35400; }
-    .btn-share { background: #2980b9; color: #fff; }
-    .btn-share:hover { background: #1c5980; }
-    
-    .workspace { flex: 2; display: flex; justify-content: center; align-items: center; background: #0a0a0a; border-radius: 8px; padding: 20px; }
-    
-    /* 1:1 Social Media Card Container */
-    #quote-card {
-      width: 500px;
-      height: 500px;
-      padding: 24px;
+    /* Global Header Always at Top */
+    .brand-header {
+      width: 100%;
+      text-align: center;
+      padding: 10px 0;
+      background: #1a1a1a;
+      border-bottom: 1px solid #2a2a2a;
+    }
+    .brand-header h1 { font-size: 1.3rem; color: #e67e22; letter-spacing: 0.5px; }
+    .brand-header p { font-size: 0.7rem; opacity: 0.7; margin-top: 2px; }
+
+    /* Main Grid */
+    .app-container {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      grid-template-areas: "controls workspace";
+      gap: 16px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px;
+      align-items: start;
+    }
+
+    .controls {
+      grid-area: controls;
+      background: #1e1e1e;
+      padding: 14px;
+      border-radius: 8px;
       display: flex;
       flex-direction: column;
+      gap: 10px;
+      border: 1px solid #2a2a2a;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .full-width { grid-column: span 2; }
+
+    .form-group { display: flex; flex-direction: column; gap: 3px; }
+    .form-group label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px; color: #bbb; }
+
+    input, select, textarea, button {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 4px;
+      border: 1px solid #333;
+      background: #2a2a2a;
+      color: #fff;
+      font-size: 0.75rem;
+    }
+
+    textarea { resize: vertical; min-height: 50px; }
+    button { background: #e67e22; border: none; font-weight: bold; cursor: pointer; padding: 8px; }
+    button:hover { background: #d35400; }
+    .button-group { display: flex; gap: 8px; }
+
+    .workspace {
+      grid-area: workspace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+
+    /* 4:5 Aspect Ratio Canvas */
+    #quote-card {
       position: relative;
+      width: 400px;
+      height: 500px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.6);
       overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-      background-size: cover;
-      background-position: center;
+      box-sizing: border-box;
+      padding: 18px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 4px;
     }
 
-    /* Images Styling */
-    .prabhupada-img { 
-      width: 100px; 
-      height: 100px; 
-      border-radius: 50%; 
-      object-fit: cover; 
-      border: none; 
-      filter: drop-shadow(0px 4px 10px rgba(0,0,0,0.25)); 
+    /* Theme Background Textures */
+    .theme-saffron {
+      background: radial-gradient(circle at center, #fff8e7 0%, #ffe0b2 100%);
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43 0c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm63 31c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7z' fill='%20%23d35400' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E"), linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+      color: #2c3e50;
     }
 
-    .speaker-img { 
-      width: 68px; 
-      height: 68px; 
-      border-radius: 50%; 
-      object-fit: cover; 
-      border: none; 
-      -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 98%);
-      mask-image: radial-gradient(circle, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 98%);
+    .theme-parchment {
+      background-color: #f4ebd9;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%238c6d46' fill-opacity='0.15' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
+      color: #3e2723;
     }
 
-    .subtle-header { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.65; font-weight: 600; }
-    .prabhupada-title { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; margin-top: 2px; }
-
-    /* Strict Flex Middle Section for Quote Only (No Overlap) */
-    .quote-box { 
-      flex: 1; 
-      width: 100%; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      overflow: hidden; 
-      padding: 12px 0; 
-      z-index: 2; 
+    .theme-dark {
+      background: #181818;
+      background-image: radial-gradient(#2c2c2c 1px, transparent 1px);
+      background-size: 12px 12px;
+      color: #f1c40f;
     }
 
-    .quote-text { 
-      font-style: italic; 
-      font-family: 'Georgia', serif; 
-      line-height: 1.35; 
-      text-align: center; 
-      max-height: 100%;
+    .theme-ethereal {
+      background: linear-gradient(135deg, #e0f7fa 0%, #e1bee7 100%);
+      color: #4a148c;
     }
 
-    .speaker-info { display: flex; align-items: center; gap: 12px; z-index: 2; }
+    .theme-modern {
+      background: #ffffff;
+      color: #111111;
+      border: 8px solid #e67e22;
+    }
+
+    /* Inner Card Layout */
+    .prabhupada-container { display: flex; flex-direction: column; align-items: center; text-align: center; }
+    
+    /* Prominent Srila Prabhupada Sizing */
+    .prabhupada-img {
+      width: 105px;
+      height: 105px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #e67e22;
+      margin: 4px 0;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    }
+
+    .speaker-img {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #e67e22;
+      margin: 2px 0;
+    }
+
+    .subtle-header { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; }
+    .prabhupada-title { font-size: 0.7rem; font-weight: 600; }
+    .quote-box { width: 100%; height: 180px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 8px; }
+    .quote-text { font-family: Georgia, serif; font-style: italic; line-height: 1.35; }
+    .speaker-info { display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center; }
     .speaker-details { display: flex; flex-direction: column; }
-    .speaker-name { font-size: 0.95rem; font-weight: bold; }
-    .metadata-line { font-size: 0.7rem; opacity: 0.85; margin-top: 2px; }
+    .speaker-name { font-weight: bold; font-size: 0.85rem; }
+    .metadata-line { font-size: 0.72rem; opacity: 0.85; }
 
-    /* Templates */
-    #quote-card.theme-saffron { background: radial-gradient(circle at top left, #fffaf0, #fceabb, #f8b500); color: #3a1c00; align-items: center; text-align: center; border: 8px solid #d35400; }
-    #quote-card.theme-saffron .prabhupada-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 4px; }
-    #quote-card.theme-saffron .speaker-info { flex-direction: column; justify-content: center; text-align: center; }
+    /* Collapsible Details Styling */
+    details summary {
+      cursor: pointer;
+      font-weight: bold;
+      background: #2a2a2a;
+      padding: 8px;
+      border-radius: 4px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #e67e22;
+      list-style: none;
+    }
 
-    #quote-card.theme-parchment { background-color: #f4e8c1; background-image: radial-gradient(#d4c398 1px, transparent 1px), radial-gradient(#d4c398 1px, #f4e8c1 1px); background-size: 20px 20px; background-position: 0 0, 10px 10px; color: #3a2818; justify-content: space-between; border: 1px solid #c8b282; }
-    #quote-card.theme-parchment .speaker-info { justify-content: flex-start; }
-    #quote-card.theme-parchment .prabhupada-container { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
-
-    #quote-card.theme-dark { background: radial-gradient(circle at center, #2c2c2c 0%, #111111 100%); color: #f1f1f1; border: 2px solid #d4af37; justify-content: space-between; }
-    #quote-card.theme-dark .speaker-info { justify-content: flex-start; }
-    #quote-card.theme-dark .prabhupada-container { display: flex; align-items: center; gap: 12px; text-align: left; }
-
-    #quote-card.theme-ethereal { background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); color: #1a237e; justify-content: space-between; }
-    #quote-card.theme-ethereal .speaker-info { justify-content: center; text-align: center; flex-direction: column; }
-    #quote-card.theme-ethereal .prabhupada-container { display: flex; align-items: center; gap: 12px; text-align: left; }
-
-    #quote-card.theme-modern { background: #ffffff; background-image: repeating-linear-gradient(45deg, #f9f9f9 0, #f9f9f9 10px, transparent 0, transparent 50px); color: #111; border-top: 12px solid #2b6cb0; justify-content: space-between; }
-    #quote-card.theme-modern .prabhupada-container { display: flex; flex-direction: column; align-items: center; text-align: center; }
-    #quote-card.theme-modern .speaker-info { justify-content: flex-end; }
-  
-      
-  
+    @media screen and (max-width: 768px) {
+      body { overflow-y: auto; }
+      .app-container {
+        display: flex;
+        flex-direction: column;
+        padding: 8px;
+        align-items: center;
+      }
+      .workspace { order: 1; margin-bottom: 12px; }
+      #quote-card { zoom: 0.8; }
+      .controls { order: 2; width: 100%; max-width: 400px; }
+    }
   </style>
-   </head>
+</head>
 <body>
 
-  <div class="controls">
-    <div class="brand-header">
-      <h1>Vani-Quotes</h1>
-      <p>Devotional Quote Card Generator</p>
-    </div>
-    
-    <div class="form-group">
-      <label>Template Preset</label>
-      <select id="themeSelect">
-        <option value="theme-saffron">1. Traditional Saffron</option>
-        <option value="theme-parchment">2. Textured Parchment</option>
-        <option value="theme-dark">3. Dark Devotional</option>
-        <option value="theme-ethereal">4. Ethereal Texture</option>
-        <option value="theme-modern">5. Modern Editorial</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label>Srila Prabhupada Photo</label>
-      <select id="prabhupadaSelect">
-        <option value="assets/Prabhupada/1.jpg">Prabhupada Photo 1</option>
-        <option value="assets/Prabhupada/2.jpg">Prabhupada Photo 2</option>
-        <option value="assets/Prabhupada/3.jpg">Prabhupada Photo 3</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label>Quote Text</label>
-      <textarea id="quoteInput" placeholder="Enter quote here...">By serving the great souls, one attains all success in spiritual life.</textarea>
-    </div>
-
-    <div class="form-group">
-      <label>Speaker Name</label>
-      <input type="text" id="speakerInput" value="HH Maha-Vishnu Swami Maharaj">
-    </div>
-
-    <div class="form-group">
-      <label>Speaker Photo Preset</label>
-      <select id="maharajSelect">
-        <option value="assets/Maharaj/m1.jpg">Maharaj Photo 1</option>
-        <option value="assets/Maharaj/m2.jpg">Maharaj Photo 2</option>
-        <option value="assets/Maharaj/m3.jpg">Maharaj Photo 3</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label>Or Upload Custom Speaker Photo</label>
-      <input type="file" id="speakerFileInput" accept="image/*" style="margin-bottom: 4px;">
-      <input type="text" id="speakerUrlInput" placeholder="Or paste image URL...">
-    </div>
-
-    <div class="form-group"><label>Date</label><input type="text" id="dateInput" placeholder="e.g. Jan 2004"></div>
-    <div class="form-group"><label>Location</label><input type="text" id="locInput" placeholder="e.g. Singapore"></div>
-    <div class="form-group"><label>Source</label><input type="text" id="sourceInput" placeholder="e.g. Srimad Bhagavatam"></div>
-
-    <div class="button-group">
-      <button class="btn btn-download" id="downloadBtn">Download PNG</button>
-      <button class="btn btn-share" id="shareBtn">Share Card</button>
-    </div>
+  <!-- Title Always Top -->
+  <div class="brand-header">
+    <h1>Vani-Quotes</h1>
+    <p>Devotional Quote Card Generator</p>
   </div>
 
-  <div class="workspace">
-    <div id="quote-card" class="theme-saffron">
-      <div id="cardContent" style="width:100%; height:100%; display:flex; flex-direction:inherit; justify-content:inherit; align-items:inherit;"></div>
+  <div class="app-container">
+    <div class="workspace">
+      <div id="quote-card" class="theme-saffron">
+        <div id="cardContent" style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:space-between; align-items:center;"></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="form-group full-width">
+        <label>Quote Text</label>
+        <textarea id="quoteInput" placeholder="Enter quote here...">By serving the great souls, one attains all success in spiritual life.</textarea>
+      </div>
+
+      <!-- Collapsed by default -->
+      <details>
+        <summary>⚙️ Card Settings</summary>
+        <div class="form-grid" style="margin-top: 8px;">
+          <div class="form-group full-width">
+            <label>Theme Texture</label>
+            <select id="themeSelect">
+              <option value="theme-saffron">1. Traditional Saffron</option>
+              <option value="theme-parchment">2. Textured Parchment</option>
+              <option value="theme-dark">3. Dark Devotional</option>
+              <option value="theme-ethereal">4. Ethereal Texture</option>
+              <option value="theme-modern">5. Modern Editorial</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Speaker</label>
+            <input type="text" id="speakerInput" value="HH Maha-Vishnu Swami Maharaj">
+          </div>
+
+          <div class="form-group">
+            <label>Speaker Photo</label>
+            <select id="maharajSelect">
+              <option value="assets/Maharaj/m1.jpg">Photo 1</option>
+              <option value="assets/Maharaj/m2.jpg">Photo 2</option>
+              <option value="assets/Maharaj/m3.jpg">Photo 3</option>
+            </select>
+          </div>
+
+          <div class="form-group full-width">
+            <label>Upload Custom Photo</label>
+            <input type="file" id="speakerFileInput" accept="image/*">
+          </div>
+
+          <div class="form-group"><label>Date</label><input type="text" id="dateInput" placeholder="e.g. Jan 2004"></div>
+          <div class="form-group"><label>Location</label><input type="text" id="locInput" placeholder="e.g. Singapore"></div>
+          <div class="form-group full-width"><label>Source</label><input type="text" id="sourceInput" placeholder="e.g. Srimad Bhagavatam"></div>
+        </div>
+      </details>
+
+      <div class="button-group">
+        <button class="btn btn-download" id="downloadBtn">Download PNG</button>
+        <button class="btn btn-share" id="shareBtn">Share Card</button>
+      </div>
     </div>
   </div>
 
   <script>
+    const prabhupadaPhotos = [
+      'assets/Prabhupada/1.jpg',
+      'assets/Prabhupada/2.jpg',
+      'assets/Prabhupada/3.jpg'
+    ];
+    let currentPrabhupadaIndex = 0;
+
     const quoteInput = document.getElementById('quoteInput');
     const speakerInput = document.getElementById('speakerInput');
     const speakerFileInput = document.getElementById('speakerFileInput');
-    const speakerUrlInput = document.getElementById('speakerUrlInput');
-    const prabhupadaSelect = document.getElementById('prabhupadaSelect');
     const maharajSelect = document.getElementById('maharajSelect');
     const dateInput = document.getElementById('dateInput');
     const locInput = document.getElementById('locInput');
@@ -203,17 +281,10 @@
     const cardContent = document.getElementById('cardContent');
 
     let activeSpeakerImage = maharajSelect.value;
-    let activePrabhupadaImage = prabhupadaSelect.value;
-
-    prabhupadaSelect.addEventListener('change', () => {
-      activePrabhupadaImage = prabhupadaSelect.value;
-      renderCard();
-    });
 
     maharajSelect.addEventListener('change', () => {
       activeSpeakerImage = maharajSelect.value;
       speakerFileInput.value = '';
-      speakerUrlInput.value = '';
       renderCard();
     });
 
@@ -223,27 +294,23 @@
         const reader = new FileReader();
         reader.onload = (evt) => {
           activeSpeakerImage = evt.target.result;
-          speakerUrlInput.value = '';
           renderCard();
         };
         reader.readAsDataURL(file);
       }
     });
 
-    speakerUrlInput.addEventListener('input', () => {
-      if (speakerUrlInput.value.trim()) {
-        activeSpeakerImage = speakerUrlInput.value.trim();
-        speakerFileInput.value = '';
-        renderCard();
-      }
-    });
+    function togglePrabhupadaPhoto() {
+      currentPrabhupadaIndex = (currentPrabhupadaIndex + 1) % prabhupadaPhotos.length;
+      renderCard();
+    }
 
     function adjustFontSize() {
       const quoteDisplay = document.getElementById('quoteDisplay');
       if (!quoteDisplay) return;
       const box = quoteDisplay.parentElement;
 
-      let fontSize = 38;
+      let fontSize = 26;
       quoteDisplay.style.fontSize = fontSize + 'px';
 
       while ((box.scrollHeight > box.clientHeight || box.scrollWidth > box.clientWidth) && fontSize > 8) {
@@ -264,7 +331,7 @@
       const prabhupadaBlock = `
         <div class="prabhupada-container">
           <span class="subtle-header">In service of</span>
-          <img src="${activePrabhupadaImage}" class="prabhupada-img" alt="Srila Prabhupada">
+          <img src="${prabhupadaPhotos[currentPrabhupadaIndex]}" class="prabhupada-img" alt="Srila Prabhupada" onclick="togglePrabhupadaPhoto()" title="Click to cycle photo">
           <span class="prabhupada-title">HDG Srila A.C. Bhaktivedanta Swami Prabhupada</span>
         </div>
       `;
@@ -297,20 +364,20 @@
     document.getElementById('downloadBtn').addEventListener('click', async () => {
       const canvas = await generateCanvas();
       const link = document.createElement('a');
-      link.download = 'vani-ashraya-quote.jpg';
-      link.href = canvas.toDataURL('image/jpeg', 0.85);
+      link.download = 'vani-quote.png';
+      link.href = canvas.toDataURL('image/png');
       link.click();
     });
 
     document.getElementById('shareBtn').addEventListener('click', async () => {
       const canvas = await generateCanvas();
       canvas.toBlob(async (blob) => {
-        const file = new File([blob], 'quote.jpg', { type: 'image/jpeg' });
+        const file = new File([blob], 'quote.png', { type: 'image/png' });
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
           try {
             await navigator.share({
               files: [file],
-              title: 'Vani-Ashraya Quote',
+              title: 'Vani Quote',
               text: quoteInput.value
             });
           } catch (err) {
@@ -319,11 +386,12 @@
         } else {
           alert('Native sharing is not supported on this browser. Use Download instead.');
         }
-      }, 'image/jpeg', 0.85);
+      }, 'image/png');
     });
 
     [quoteInput, speakerInput, dateInput, locInput, sourceInput].forEach(el => el.addEventListener('input', renderCard));
     themeSelect.addEventListener('change', renderCard);
+
     renderCard();
   </script>
 
