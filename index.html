@@ -183,6 +183,30 @@ html, body {
     line-height: 1.4 !important;
   }
 }
+    /* Stack Settings Panel on top and Canvas below for Mobile */
+@media (max-width: 768px) {
+  /* Targets the main layout container and forces vertical stacking */
+  body > div, .main-container, .wrapper, div[style*="display: flex"] {
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+  }
+
+  /* Ensures controls panel takes full width at the top */
+  .settings-panel, .controls, sidebar, div[style*="width"]:first-child {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 20px !important;
+  }
+
+  /* Ensures the canvas/preview card scales properly underneath */
+  #quoteCanvas, canvas, .preview-container, div[style*="width"]:last-child {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}
   </style>
 </head>
 <body>
