@@ -9,116 +9,116 @@
   <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-   <style>
-    /* Reset & Base Styles */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { display: flex; background: #121212; color: #fff; min-height: 100vh; padding: 20px; gap: 20px; }
+    
+    .controls { flex: 1; max-width: 380px; background: #1e1e1e; padding: 20px; border-radius: 8px; display: flex; flex-direction: column; gap: 10px; max-height: 95vh; overflow-y: auto; }
+    .brand-header { border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 4px; }
+    .brand-header h1 { font-size: 1.4rem; color: #f39c12; letter-spacing: 1px; }
+    .brand-header p { font-size: 0.75rem; color: #888; }
+    
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    label { font-size: 0.8rem; color: #bbb; }
+    input, textarea, select { padding: 8px; background: #2a2a2a; border: 1px solid #444; color: #fff; border-radius: 4px; font-size: 0.85rem; }
+    textarea { resize: vertical; height: 65px; }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: #121212;
-  color: #ffffff;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-}
+    .button-group { display: flex; gap: 10px; margin-top: 8px; }
+    .btn { flex: 1; padding: 10px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.85rem; transition: background 0.2s; }
+    .btn-download { background: #e67e22; color: #fff; }
+    .btn-download:hover { background: #d35400; }
+    .btn-share { background: #2980b9; color: #fff; }
+    .btn-share:hover { background: #1c5980; }
+    
+    .workspace { flex: 2; display: flex; justify-content: center; align-items: center; background: #0a0a0a; border-radius: 8px; padding: 20px; }
+    
+    /* 1:1 Social Media Card Container */
+    #quote-card {
+      width: 500px;
+      height: 500px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      background-size: cover;
+      background-position: center;
+    }
 
-/* App Header */
-header, h1 {
-  text-align: center;
-  color: #e67e22;
-  margin-bottom: 20px;
-}
+    /* Images Styling */
+    .prabhupada-img { 
+      width: 100px; 
+      height: 100px; 
+      border-radius: 50%; 
+      object-fit: cover; 
+      border: none; 
+      filter: drop-shadow(0px 4px 10px rgba(0,0,0,0.25)); 
+    }
 
-/* Main Layout Container (Desktop: Side-by-Side) */
-.main-container, main, #app {
-  display: flex;
-  flex-direction: row;
-  gap: 24px;
-  width: 100%;
-  max-width: 1100px;
-  align-items: flex-start;
-  justify-content: center;
-}
+    .speaker-img { 
+      width: 68px; 
+      height: 68px; 
+      border-radius: 50%; 
+      object-fit: cover; 
+      border: none; 
+      -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 98%);
+      mask-image: radial-gradient(circle, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 98%);
+    }
 
-/* Settings / Controls Panel */
-.controls, .settings-panel, sidebar, form {
-  flex: 1;
-  min-width: 300px;
-  background: #1e1e1e;
-  padding: 20px;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
+    .subtle-header { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.65; font-weight: 600; }
+    .prabhupada-title { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; margin-top: 2px; }
 
-/* Controls Inputs & Buttons */
-input, select, textarea, button {
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: 6px;
-  border: 1px solid #333;
-  background: #2a2a2a;
-  color: #fff;
-  font-size: 14px;
-}
+    /* Strict Flex Middle Section for Quote Only (No Overlap) */
+    .quote-box { 
+      flex: 1; 
+      width: 100%; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      overflow: hidden; 
+      padding: 12px 0; 
+      z-index: 2; 
+    }
 
-button {
-  background: #e67e22;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s;
-}
+    .quote-text { 
+      font-style: italic; 
+      font-family: 'Georgia', serif; 
+      line-height: 1.35; 
+      text-align: center; 
+      max-height: 100%;
+    }
 
-button:hover {
-  background: #d35400;
-}
+    .speaker-info { display: flex; align-items: center; gap: 12px; z-index: 2; }
+    .speaker-details { display: flex; flex-direction: column; }
+    .speaker-name { font-size: 0.95rem; font-weight: bold; }
+    .metadata-line { font-size: 0.7rem; opacity: 0.85; margin-top: 2px; }
 
-/* Canvas / Preview Container */
-.preview-container, .card-wrapper, #quoteCard {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
+    /* Templates */
+    #quote-card.theme-saffron { background: radial-gradient(circle at top left, #fffaf0, #fceabb, #f8b500); color: #3a1c00; align-items: center; text-align: center; border: 8px solid #d35400; }
+    #quote-card.theme-saffron .prabhupada-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 4px; }
+    #quote-card.theme-saffron .speaker-info { flex-direction: column; justify-content: center; text-align: center; }
 
-canvas, img#preview {
-  max-width: 100%;
-  height: auto !important;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-}
+    #quote-card.theme-parchment { background-color: #f4e8c1; background-image: radial-gradient(#d4c398 1px, transparent 1px), radial-gradient(#d4c398 1px, #f4e8c1 1px); background-size: 20px 20px; background-position: 0 0, 10px 10px; color: #3a2818; justify-content: space-between; border: 1px solid #c8b282; }
+    #quote-card.theme-parchment .speaker-info { justify-content: flex-start; }
+    #quote-card.theme-parchment .prabhupada-container { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
 
-/* Mobile Layout: Stack Settings ON TOP, Canvas BELOW */
-@media (max-width: 768px) {
-  body {
-    padding: 12px;
-  }
+    #quote-card.theme-dark { background: radial-gradient(circle at center, #2c2c2c 0%, #111111 100%); color: #f1f1f1; border: 2px solid #d4af37; justify-content: space-between; }
+    #quote-card.theme-dark .speaker-info { justify-content: flex-start; }
+    #quote-card.theme-dark .prabhupada-container { display: flex; align-items: center; gap: 12px; text-align: left; }
 
-  .main-container, main, #app {
-    flex-direction: column;
-    align-items: center;
-  }
+    #quote-card.theme-ethereal { background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); color: #1a237e; justify-content: space-between; }
+    #quote-card.theme-ethereal .speaker-info { justify-content: center; text-align: center; flex-direction: column; }
+    #quote-card.theme-ethereal .prabhupada-container { display: flex; align-items: center; gap: 12px; text-align: left; }
 
-  .controls, .settings-panel, sidebar, form {
-    width: 100%;
-    min-width: unset;
-  }
-
-  .preview-container, .card-wrapper, #quoteCard {
-    width: 100%;
-  }
-}
+    #quote-card.theme-modern { background: #ffffff; background-image: repeating-linear-gradient(45deg, #f9f9f9 0, #f9f9f9 10px, transparent 0, transparent 50px); color: #111; border-top: 12px solid #2b6cb0; justify-content: space-between; }
+    #quote-card.theme-modern .prabhupada-container { display: flex; flex-direction: column; align-items: center; text-align: center; }
+    #quote-card.theme-modern .speaker-info { justify-content: flex-end; }
+  
+      
+  
   </style>
-</head>
+   </head>
 <body>
 
   <div class="controls">
