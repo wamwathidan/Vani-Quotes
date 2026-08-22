@@ -114,6 +114,43 @@
     #quote-card.theme-modern { background: #ffffff; background-image: repeating-linear-gradient(45deg, #f9f9f9 0, #f9f9f9 10px, transparent 0, transparent 50px); color: #111; border-top: 12px solid #2b6cb0; justify-content: space-between; }
     #quote-card.theme-modern .prabhupada-container { display: flex; flex-direction: column; align-items: center; text-align: center; }
     #quote-card.theme-modern .speaker-info { justify-content: flex-end; }
+    /* Mobile Optimization */
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+
+  /* Main App Container */
+  .container, #app, main {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 15px !important;
+    box-sizing: border-box;
+  }
+
+  /* Typography Adjustments */
+  h1 {
+    font-size: 1.5rem !important;
+  }
+  
+  p, blockquote {
+    font-size: 1rem !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Responsive Controls & Inputs */
+  input[type="text"], select, button {
+    width: 100% !important;
+    font-size: 16px !important; /* Prevents iOS auto-zoom on focus */
+    box-sizing: border-box;
+  }
+
+  /* Stack flex containers vertically on small screens */
+  .flex-row, div[style*="display: flex"] {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+}
   </style>
 </head>
 <body>
