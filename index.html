@@ -151,6 +151,38 @@
     gap: 10px !important;
   }
 }
+    /* Responsive Viewport Base */
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Mobile Layout Overrides */
+@media (max-width: 600px) {
+  body {
+    padding: 10px !important;
+    margin: 0 !important;
+  }
+
+  /* Force Quote Card & App Container to scale inside small screens */
+  .container, #quoteCard, #quote-container, div[style*="width"] {
+    width: 95vw !important;
+    max-width: 100% !important;
+    min-width: unset !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Scale inner text dynamically */
+  h1, h2 {
+    font-size: 1.3rem !important;
+  }
+
+  blockquote, p {
+    font-size: 0.95rem !important;
+    line-height: 1.4 !important;
+  }
+}
   </style>
 </head>
 <body>
